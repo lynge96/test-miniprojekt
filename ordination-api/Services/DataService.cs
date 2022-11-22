@@ -138,7 +138,6 @@ public class DataService
     public DagligFast OpretDagligFast(int patientId, int laegemiddelId, 
         double antalMorgen, double antalMiddag, double antalAften, double antalNat, 
         DateTime startDato, DateTime slutDato) {
-
         // TODO: Implement!
         return null!;
     }
@@ -150,7 +149,17 @@ public class DataService
 
     public string AnvendOrdination(int id, Dato dato) {
         // TODO: Implement!
-        return null!;
+        PN ordination = db.PNs.Where(x => x.OrdinationId == id).First();
+        if (ordination.givDosis(dato))
+        {
+            ordination.dates.Add(dato);
+            db.SaveChanges();
+            return "Ordination anvendt!";
+        } else
+        {
+            return "Dato ikke accepteret!!";
+        }
+
     }
 
     /// <summary>

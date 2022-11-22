@@ -3,10 +3,12 @@ namespace shared.Model;
 public class DagligSkæv : Ordination {
     public List<Dosis> doser { get; set; } = new List<Dosis>();
 
-    public DagligSkæv(DateTime startDen, DateTime slutDen, Laegemiddel laegemiddel) : base(laegemiddel, startDen, slutDen) {
+    public DagligSkæv(DateTime startDen, DateTime slutDen, Laegemiddel laegemiddel) : base(laegemiddel, startDen, slutDen)
+	{
 	}
 
-    public DagligSkæv(DateTime startDen, DateTime slutDen, Laegemiddel laegemiddel, Dosis[] doser) : base(laegemiddel, startDen, slutDen) {
+    public DagligSkæv(DateTime startDen, DateTime slutDen, Laegemiddel laegemiddel, Dosis[] doser) : base(laegemiddel, startDen, slutDen)
+	{
         this.doser = doser.ToList();
     }    
 
@@ -21,9 +23,18 @@ public class DagligSkæv : Ordination {
 		return base.antalDage() * doegnDosis();
 	}
 
-	public override double doegnDosis() {
+	public override double doegnDosis()
+	{
 		// TODO: Implement!
-        return -1;
+		double antalDage = base.antalDage();
+		double samletDoser = 0;
+
+		foreach (var dose in doser)
+		{
+			samletDoser += dose.antal;
+		}
+
+		return Math.Round(samletDoser / antalDage);
 	}
 
 	public override String getType() {
