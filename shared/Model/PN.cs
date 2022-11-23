@@ -6,6 +6,7 @@ public class PN : Ordination {
 
     public PN (DateTime startDen, DateTime slutDen, double antalEnheder, Laegemiddel laegemiddel) : base(laegemiddel, startDen, slutDen) {
 		this.antalEnheder = antalEnheder;
+        p
 	}
 
     public PN() : base(null!, new DateTime(), new DateTime()) {
@@ -23,7 +24,7 @@ public class PN : Ordination {
             dates.Add(givesDen);
             return true;
         }
-
+        
         return false;
     }
 
