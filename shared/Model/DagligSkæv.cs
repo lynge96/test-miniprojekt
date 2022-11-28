@@ -26,7 +26,6 @@ public class DagligSkæv : Ordination {
 	public override double doegnDosis()
 	{
 		// TODO: Implement!
-		double antalDage = base.antalDage();
 		double samletDoser = 0;
 
 		foreach (var dose in doser)
