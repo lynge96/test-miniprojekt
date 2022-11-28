@@ -141,7 +141,16 @@ public class DataService
     public PN OpretPN(int patientId, int laegemiddelId, double antal, DateTime startDato, DateTime slutDato)
     {
         // TODO: Implement!
-        return null!;
+        Patient patient = db.Patienter.Find(patientId);
+        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
+        PN nyPN = new PN(startDato.Date, slutDato.Date, antal, laegemiddel);
+
+        db.Ordinationer.Add(nyPN);
+        patient.ordinationer.Add(nyPN);
+
+        db.SaveChanges();
+
+        return nyPN;
     }
 
     public DagligFast OpretDagligFast(int patientId, int laegemiddelId,
@@ -149,19 +158,37 @@ public class DataService
         DateTime startDato, DateTime slutDato)
     {
         // TODO: Implement!
-        return null!;
+        Patient patient = db.Patienter.Find(patientId);
+        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
+        DagligFast nyDagligFast = new DagligFast(startDato.Date, slutDato.Date, laegemiddel, antalMorgen, antalMiddag, antalAften, antalNat);
+
+        db.Ordinationer.Add(nyDagligFast);
+        patient.ordinationer.Add(nyDagligFast);
+
+        db.SaveChanges();
+
+        return nyDagligFast!;
     }
 
     public DagligSkæv OpretDagligSkaev(int patientId, int laegemiddelId, Dosis[] doser, DateTime startDato, DateTime slutDato)
     {
         // TODO: Implement!
-        return null!;
+        Patient patient = db.Patienter.Find(patientId);
+        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId); 
+        DagligSkæv nyDagligSkæv = new DagligSkæv(startDato.Date, slutDato.Date, laegemiddel, doser);
+
+        db.Ordinationer.Add(nyDagligSkæv);
+        patient.ordinationer.Add(nyDagligSkæv);
+
+        db.SaveChanges();
+
+        return nyDagligSkæv!;
     }
 
     public string AnvendOrdination(int id, Dato dato)
     {
         // TODO: Implement!
-        PN ordination = db.PNs.Where(x => x.OrdinationId == id).First();
+        PN ordination = db.PNs.Find(id); 
 
         if (ordination == null)
         {
@@ -177,18 +204,33 @@ public class DataService
         {
             return "Dato ikke accepteret!!";
         }
+    }
 
-        /// <summary>
-        /// Den anbefalede dosis for den pågældende patient, per døgn, hvor der skal tages hensyn til
-        /// patientens vægt. Enheden afhænger af lægemidlet. Patient og lægemiddel må ikke være null.
-        /// </summary>
-        /// <param name="patient"></param>
-        /// <param name="laegemiddel"></param>
-        /// <returns></returns>
-        public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId)
+    /// <summary>
+    /// Den anbefalede dosis for den pågældende patient, per døgn, hvor der skal tages hensyn til
+    /// patientens vægt. Enheden afhænger af lægemidlet. Patient og lægemiddel må ikke være null.
+    /// </summary>
+    /// <param name="patient"></param>
+    /// <param name="laegemiddel"></param>
+    /// <returns></returns>
+    public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId)
+    {
+        // TODO: Implement!
+        Patient patient = db.Patienter.Find(patientId);
+        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
+
+        if (patient.vaegt < 25)
         {
-            // TODO: Implement!
-            return -1;
+            return patient.vaegt * laegemiddel.enhedPrKgPrDoegnLet;
         }
+        else if (patient.vaegt >= 25 && patient.vaegt <= 120)
+        {
+            return patient.vaegt * laegemiddel.enhedPrKgPrDoegnNormal;
+        }
+        else
+        {
+            return patient.vaegt * laegemiddel.enhedPrKgPrDoegnTung;
+        }
+    }
 
     }

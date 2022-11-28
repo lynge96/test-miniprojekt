@@ -34,7 +34,7 @@ public class DagligSkæv : Ordination {
 			samletDoser += dose.antal;
 		}
 
-		return Math.Round(samletDoser / antalDage);
+		return Math.Round(samletDoser);
 	}
 
 	public override String getType() {
