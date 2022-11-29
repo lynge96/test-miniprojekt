@@ -19,21 +19,22 @@
             <div class="form-group row">
                 <label for="vægtfra" class="col-sm-4 col-form-label">Vægt fra</label>
                 <div class="col-sm-8">
-                <input type="number" class="form-control" id="vægtfra">
+                    <input type="number" @bind="minVaegt" class="form-control" id="vægtfra">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="vægttil" class="col-sm-4 col-form-label">Vægt til</label>
                 <div class="col-sm-8">
-                <input type="number" class="form-control" id="vægttil">
+                    <input type="number" @bind="maxVaegt" class="form-control" id="vægttil">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="lm" class="col-sm-4 col-form-label">Lægemiddel</label>
                 <div class="col-sm-8">
-                <input type="text" class="form-control" id="lm">
+                    <LaegemiddelList onSelectLægemiddel="@onSelectLægemiddel"></LaegemiddelList>
+                    <button class="btn btn-primary p-3" @onclick="ClickOpret">Opret ordination</button>
                 </div>
             </div>
         </div>
@@ -44,9 +45,13 @@
             <div class="form-group row">
                 <label for="antal" class="col-sm-4 col-form-label">Antal</label>
                 <div class="col-sm-8">
-                <input readonly type="number" class="form-control" id="antal">
+                    <input readonly type="number" value=@antalOrdinationer class="form-control" id="antal">
                 </div>
             </div>
+            @foreach (var item in samletOrdinationer)
+            {
+                <p>@item.OrdinationId</p>
+            }
 
         </div>
     </div>
@@ -54,6 +59,62 @@
 </div>
 
 @code {
-    public Ordination? ordination;
-    public List<Ordination> ordinationer = new List<Ordination>();
+    public Laegemiddel? searchLaegemiddel;
+    public int antalOrdinationer;
+    public double minVaegt, maxVaegt;
+
+    private Laegemiddel[]? lægemidler;
+    public OrdinationResponse? ordinationerRecord;
+    public PatientResponse[]? patienterRecord;
+
+
+    public List<PatientResponse>? patienterRecordList = new List<PatientResponse>();
+    public List<PatientResponse>? patienterRecordListSorted = new List<PatientResponse>();
+
+    public List<Ordination> samletOrdinationer = new List<Ordination>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lægemidler = await apiService.GetLaegemidler();
+        ordinationerRecord = await apiService.GetOrdinationer();
+        patienterRecord = await apiService.GetPatienter();
+        patienterRecordList = patienterRecord.ToList();
+
+        foreach (var item in ordinationerRecord.dagligFast)
+        {
+            samletOrdinationer.Add(item);
+        }
+
+        foreach (var item in ordinationerRecord.dagligSkaev)
+        {
+            samletOrdinationer.Add(item);
+        }
+
+        foreach (var item in ordinationerRecord.pn)
+        {
+            samletOrdinationer.Add(item);
+        }
+
+    }
+
+    private void onSelectLægemiddel(Laegemiddel l)
+    {
+        this.searchLaegemiddel = l;
+        Console.WriteLine("Selected " + l);
+    }
+
+    private void ClickOpret()
+    {
+        int result = 0;
+
+        Console.WriteLine($"Min: {minVaegt}, Max: {maxVaegt}, Lægemiddel: {searchLaegemiddel}");
+
+        patienterRecordListSorted = patienterRecordList.Where(x => (x.vaegt >= minVaegt) && (x.vaegt <= maxVaegt)).ToList();
+
+        antalOrdinationer = samletOrdinationer.Where(x => x.laegemiddel.LaegemiddelId == searchLaegemiddel.LaegemiddelId).Count();
+
+        //Console.WriteLine($"Lægemiddel ID antal: {antalOrdinationer}");
+        //Console.WriteLine($"Antal inden for vægtgruppen: {result}");
+    }
 }
