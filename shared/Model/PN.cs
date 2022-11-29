@@ -21,7 +21,6 @@ public class PN : Ordination {
         // TODO: Implement!
         if (givesDen.dato.Date >= startDen.Date && givesDen.dato.Date <= slutDen.Date)
         {
-            dates.Add(givesDen);
             return true;
         }
         

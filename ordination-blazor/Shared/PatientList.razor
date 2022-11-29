@@ -23,9 +23,9 @@ else
         {
             <tr>
                 @if(p.Equals(selected)) {
-                    <td class="selected" @onclick="() => ClickPatient(p)">@p.navn</td>
+                    <td class="selected" @onclick="() => ClickPatient(p)">@p.cprnr :@p.navn</td>
                 } else {
-                    <td @onclick="() => ClickPatient(p)">@p.navn</td>
+                    <td @onclick="() => ClickPatient(p)">@p.cprnr : @p.navn</td>
                 }
             </tr>
         }

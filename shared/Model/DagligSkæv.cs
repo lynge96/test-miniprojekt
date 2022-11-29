@@ -30,8 +30,11 @@ public class DagligSkæv : Ordination {
 
 		foreach (var dose in doser)
 		{
-			samletDoser += dose.antal;
-		}
+			if (dose.antal >= 0)
+			{
+                samletDoser += dose.antal;
+            }
+        }
 
 		return Math.Round(samletDoser);
 	}
