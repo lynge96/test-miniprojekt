@@ -8,7 +8,7 @@ public class DagligSkævTest
 {
 
     [TestMethod]
-    public void OpretDosisTest()
+    public void DoegnDosisTestTest()
     {
         // Gyldig data
         // TC1:

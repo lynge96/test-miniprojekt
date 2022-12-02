@@ -72,8 +72,9 @@
     <div class="row mt-4">   
         <div class="form-group row">
             <div class="col-sm-8">
-            <button class="btn btn-primary" @onclick="Opret">Opret ordination</button>
-            <button class="btn btn-secondary" @onclick="() => onFortryd?.Invoke()">Fortryd</button>
+                <button class="btn btn-primary" @onclick="Opret">Opret ordination</button>
+                <button class="btn btn-secondary" @onclick="() => onFortryd?.Invoke()">Fortryd</button>
+                <p>@msg</p>
             </div>
         </div>
     </div>
@@ -91,6 +92,7 @@
     public Action? onFortryd { get; set; }
     [Parameter]
     public Action<string>? onDone { get; set; }
+    private string msg { get; set; } = "";
 
     private DateTime StartDato { get; set; } = DateTime.Now;
     private DateTime SlutDato { get; set; } = DateTime.Now.AddDays(3);
@@ -103,6 +105,12 @@
         if (Patient == null || laegemiddel == null) {
             return;
         }
+        else if (SlutDato < StartDato)
+        {
+            msg = "Slutdato må ikke være mindre end startdato!";
+            return;
+        }
+
         Console.WriteLine("Opret");
         var ordination = await apiService.OpretDagligSkaev(Patient.id, laegemiddel.LaegemiddelId, doser.ToArray(), StartDato, SlutDato);
         Console.WriteLine("Oprettet!");

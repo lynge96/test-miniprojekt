@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 var AllowCors = "_AllowCors";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: AllowCors, builder => {
+    options.AddPolicy(name: AllowCors, builder =>
+    {
         builder.AllowAnyOrigin()
                .AllowAnyHeader()
                .AllowAnyMethod();
@@ -48,13 +49,21 @@ app.MapGet("/", (DataService service) =>
     return Results.Ok("API is running");
 });
 
+app.MapGet("/api/statistik/{laegemiddelID}/{minvaegt}/{maxvaegt}", (DataService service, int laegemiddelID, double minvaegt, double maxvaegt) =>
+{
+    return Results.Ok(service.GetPatienter().Where(x => (x.ordinationer.Any(po => po.laegemiddel.LaegemiddelId == laegemiddelID)
+        && (x.vaegt >= minvaegt) && (x.vaegt <= maxvaegt))).Count());
+
+});
+
 app.MapGet("/api/ordinationer", (DataService service) =>
 {
     List<PN> pn = service.GetPNs();
     List<DagligFast> dagligFast = service.GetDagligFaste();
     List<DagligSkæv> dagligSkaev = service.GetDagligSkæve();
-    
-    return Results.Ok(new {
+
+    return Results.Ok(new
+    {
         pn,
         dagligFast,
         dagligSkaev
@@ -95,12 +104,12 @@ app.MapPost("/api/ordinationer/dagligskaev/", (DataService service, DagligSkaevD
 
 app.MapPut("/api/ordinationer/pn/{id}/anvend", (DataService service, int id, DateTimeDTO dto) =>
 {
-    return Results.Ok(new {msg = service.AnvendOrdination(id, new Dato{dato = dto.date})});
+    return Results.Ok(new { msg = service.AnvendOrdination(id, new Dato { dato = dto.date }) });
 });
 
 app.MapPost("/api/patienter/{id}/beregnAnbefaletDosisPerDøgn", (DataService service, int id, AnbefaletDosisDTO dto) =>
 {
-    double dosisStørrelse =  service.GetAnbefaletDosisPerDøgn(id, dto.laegemiddelId);
+    double dosisStørrelse = service.GetAnbefaletDosisPerDøgn(id, dto.laegemiddelId);
     AnbefaletDosisDTO response = new AnbefaletDosisDTO(dto.laegemiddelId, dosisStørrelse);
     return Results.Ok(response);
 });

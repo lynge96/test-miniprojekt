@@ -48,10 +48,6 @@
                     <input readonly type="number" value=@antalOrdinationer class="form-control" id="antal">
                 </div>
             </div>
-            @foreach (var item in samletOrdinationer)
-            {
-                <p>@item.OrdinationId</p>
-            }
 
         </div>
     </div>
@@ -62,7 +58,6 @@
     public Laegemiddel? searchLaegemiddel;
     public int antalOrdinationer;
     public double minVaegt, maxVaegt;
-
     private Laegemiddel[]? lægemidler;
     public OrdinationResponse? ordinationerRecord;
     public PatientResponse[]? patienterRecord;
@@ -104,15 +99,15 @@
         Console.WriteLine("Selected " + l);
     }
 
-    private void ClickOpret()
+    private async void ClickOpret()
     {
-        int result = 0;
+        int result = await apiService.GetStatistik(searchLaegemiddel.LaegemiddelId, minVaegt, maxVaegt);
 
         Console.WriteLine($"Min: {minVaegt}, Max: {maxVaegt}, Lægemiddel: {searchLaegemiddel}");
+        Console.WriteLine(result);
+        //patienterRecordListSorted = patienterRecordList.Where(x => (x.vaegt >= minVaegt) && (x.vaegt <= maxVaegt)).ToList();
 
-        patienterRecordListSorted = patienterRecordList.Where(x => (x.vaegt >= minVaegt) && (x.vaegt <= maxVaegt)).ToList();
-
-        antalOrdinationer = samletOrdinationer.Where(x => x.laegemiddel.LaegemiddelId == searchLaegemiddel.LaegemiddelId).Count();
+        //antalOrdinationer = samletOrdinationer.Where(x => x.laegemiddel.LaegemiddelId == searchLaegemiddel.LaegemiddelId).Count();
 
         //Console.WriteLine($"Lægemiddel ID antal: {antalOrdinationer}");
         //Console.WriteLine($"Antal inden for vægtgruppen: {result}");

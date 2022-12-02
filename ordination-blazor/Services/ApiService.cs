@@ -39,6 +39,13 @@ public class ApiService
 
     }
 
+    public async Task<int> GetStatistik(int laegemiddelID, double minvaegt, double maxvaegt)
+    {
+        string url = $"{baseAPI}statistik/{laegemiddelID}/{minvaegt}/{maxvaegt}";
+        return await http.GetFromJsonAsync<int>(url);
+     
+    }
+
     public async Task<Laegemiddel[]?> GetLaegemidler()
     {
         string url = $"{baseAPI}laegemidler";

@@ -69,7 +69,6 @@
                 <button class="btn btn-primary" @onclick="Opret">Opret ordination</button>
                 <button class="btn btn-secondary" @onclick="() => onFortryd?.Invoke()">Fortryd</button>
                 <p>@msg</p>
-
             </div>
         </div>
     </div>
@@ -105,6 +104,11 @@
         else if (antalMorgen < 0 || antalMiddag < 0 || antalAften < 0 || antalNat < 0)
         {
             msg = "Antal skal være over nul!";
+            return;
+        }
+        else if (SlutDato < StartDato)
+        {
+            msg = "Slutdato må ikke være mindre end startdato!";
             return;
         }
 
