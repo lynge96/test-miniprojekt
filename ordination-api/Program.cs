@@ -51,8 +51,14 @@ app.MapGet("/", (DataService service) =>
 
 app.MapGet("/api/statistik/{laegemiddelID}/{minvaegt}/{maxvaegt}", (DataService service, int laegemiddelID, double minvaegt, double maxvaegt) =>
 {
-    return Results.Ok(service.GetPatienter().Where(x => (x.ordinationer.Any(po => po.laegemiddel.LaegemiddelId == laegemiddelID)
-        && (x.vaegt >= minvaegt) && (x.vaegt <= maxvaegt))).Count());
+    List<Patient> hej = service.GetPatienter();
+    List<PN> hej3 = service.GetPNs();
+    List<DagligFast> hej4 = service.GetDagligFaste();
+    List<DagligSkæv> hej5 = service.GetDagligSkæve();
+
+    int hej2 = hej.Where(x => (minvaegt <= x.vaegt) && (maxvaegt >= x.vaegt)).SelectMany(ordi => ordi.ordinationer).Where(x => x.laegemiddel.LaegemiddelId == laegemiddelID).Count();
+
+    return Results.Ok(hej2);
 
 });
 

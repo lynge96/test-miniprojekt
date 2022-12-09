@@ -52,10 +52,10 @@
     private async Task UpdateList() {
         if (patient == null) return;
         Console.WriteLine("Updating list");
-        
+
         OrdinationResponse? res = await apiService.GetOrdinationer();
         if (res == null) return;
-        
+
         List<Ordination> pns = res.pn.ToList().Where(o => patient.ordinationer.Any(po => po == o.OrdinationId))
             .Cast<Ordination>().ToList();
         List<Ordination> dagligSkaev = res.dagligSkaev.ToList().Where(o => patient.ordinationer.Any(po => po == o.OrdinationId))
@@ -69,12 +69,12 @@
         ordinationer.AddRange(dagligFast);
 
         if (ordination != null) {
-            ordination = ordinationer.Find(o => o.OrdinationId == ordination.OrdinationId);  
+            ordination = ordinationer.Find(o => o.OrdinationId == ordination.OrdinationId);
         }
 
         StateHasChanged();
     }
-    
+
     private async void RefreshMe()
     {
         await UpdateList();
